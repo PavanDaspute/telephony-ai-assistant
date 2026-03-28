@@ -1,0 +1,73 @@
+# ──────────────────────────────────────────
+# Python / Django
+# ──────────────────────────────────────────
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+.Python
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+staticfiles/
+mediafiles/
+media/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.secret
+
+# ──────────────────────────────────────────
+# Node / Frontend
+# ──────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+.npm
+*.tsbuildinfo
+
+# ──────────────────────────────────────────
+# Build / Compiled output
+# ──────────────────────────────────────────
+*.pyc
+*.pyo
+*.min.js
+*.min.css
+
+# ──────────────────────────────────────────
+# Testing / Coverage
+# ──────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ──────────────────────────────────────────
+# IDE / Editor
+# ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ──────────────────────────────────────────
+# OS
+# ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
