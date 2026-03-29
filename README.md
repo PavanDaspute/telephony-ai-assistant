@@ -1,7 +1,7 @@
 # Property Voice Assistant
 
 A full-stack AI-powered telephony assistant built with **Django + React**.  
-Voice callers can ask questions about property listings and receive spoken answers via Twilio.
+Voice callers can ask questions about property listings and receive spoken answers via Twilio, either by **calling a phone number** or **directly from the browser using the Twilio WebRTC Voice SDK**.
 
 ---
 
@@ -71,6 +71,9 @@ Copy `backend/.env.example` → `backend/.env` and fill in:
 | `TWILIO_ACCOUNT_SID` | From Twilio console |
 | `TWILIO_AUTH_TOKEN` | From Twilio console |
 | `TWILIO_PHONE_NUMBER` | Your Twilio number |
+| `TWILIO_API_KEY` | For Voice SDK (Create in Twilio Console) |
+| `TWILIO_API_SECRET` | For Voice SDK |
+| `TWILIO_TWIML_APP_SID` | TwiML App SID for browser calling |
 
 ---
 
@@ -82,17 +85,28 @@ Copy `backend/.env.example` → `backend/.env` and fill in:
 | `GET` | `/api/properties/<id>/` | Single property detail |
 | `POST` | `/voice/` | Twilio inbound call webhook |
 | `POST` | `/process-speech/` | Speech-to-intent-to-TTS callback |
+| `GET/POST` | `/api/token/` | Generates Twilio Voice SDK Access Token |
+| `POST` | `/voice/outgoing/` | TwiML outbound call handler for browser calls |
 
 ---
 
-## 📞 Twilio Setup
+## 📞 Twilio Setup & Usage
 
-1. In the [Twilio Console](https://console.twilio.com), set your phone number's **Voice Webhook** to:
+### 1. Browser Calling (Twilio Voice SDK)
+1. In Twilio Console, create an **API Key** and save its SID and Secret.
+2. Go to **TwiML Apps** and create one.
+3. Start your ngrok tunnel: `ngrok http 8000`
+4. Set the TwiML App's **Voice Request URL** to: `https://<your-ngrok>/voice/`
+5. Update your `.env` with the new SIDs and Secret.
+6. Open the React frontend (`http://localhost:5173`), click **Start Call**, allow microphone access, and speak your query.
+
+### 2. Standard Phone Calling
+1. Start `ngrok http 8000`
+2. In the [Twilio Console](https://console.twilio.com), set your phone number's **Voice Webhook** to:
    ```
-   https://<your-public-url>/voice/
+   https://<your-ngrok>/voice/
    ```
-2. Use [ngrok](https://ngrok.com) locally: `ngrok http 8000`
-3. Update your Twilio webhook URL with the ngrok HTTPS URL.
+3. Call your Twilio phone number and speak your query.
 
 ---
 

@@ -5,6 +5,7 @@
 
 import React from 'react'
 import PropertyList from '../components/PropertyList'
+import VoiceCall from '../components/VoiceCall'
 
 const styles = {
   page: {
@@ -134,6 +135,8 @@ export default function Home() {
           ))}
         </div>
       </header>
+
+      <VoiceCall />
 
       <div style={styles.divider} />
 
