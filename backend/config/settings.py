@@ -131,3 +131,8 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all in development
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "")
 TWILIO_PHONE_NUMBER = os.environ.get("TWILIO_PHONE_NUMBER", "")
+
+# Voice SDK credentials
+TWILIO_API_KEY = os.environ.get("TWILIO_API_KEY", "")
+TWILIO_API_SECRET = os.environ.get("TWILIO_API_SECRET", "")
+TWILIO_TWIML_APP_SID = os.environ.get("TWILIO_TWIML_APP_SID", "")
