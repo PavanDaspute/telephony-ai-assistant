@@ -34,9 +34,11 @@ class VoiceWebhookView(View):
     """
 
     def post(self, request, *args, **kwargs):
+        call_sid = request.POST.get("CallSid", "Unknown")
+        logger.info("Incoming call received | CallSid: %s", call_sid)
+        
         # Build the absolute URL for the process-speech callback
         process_url = request.build_absolute_uri(reverse("process-speech"))
-        print(request.POST)
 
         twiml = build_welcome_twiml(gather_url=process_url)
 
@@ -60,12 +62,11 @@ class ProcessSpeechView(View):
     def _handle_request(self, request):
         # Extract speech transcription and call metadata from Twilio
         data = request.POST if request.method == "POST" else request.GET
-        print(data)
         speech_result = data.get("SpeechResult", "").strip()
         call_sid = data.get("CallSid", "")
         caller = data.get("From", "")
 
-        logger.warning("CallSid=%s | Caller=%s | Query=%s", call_sid, caller, speech_result)
+        logger.info("Processing Speech | CallSid: %s | Caller: %s | Query: %s", call_sid, caller, speech_result)
 
         if not speech_result:
             fallback = "I could not understand your question. Please try again."
@@ -73,8 +74,9 @@ class ProcessSpeechView(View):
             twiml = build_response_twiml(fallback, gather_url=process_url)
             return HttpResponse(twiml, content_type="application/xml")
 
-        # Get AI-generated response from DB
-        ai_response = get_ai_response(user_query=speech_result)
+        # Get AI-generated response using OpenAI
+        ai_response = get_ai_response(user_query=speech_result, call_sid=call_sid)
+        logger.info("AI Response Generated | CallSid: %s | Response: %s...", call_sid, ai_response[:50])
 
         # Log the conversation for analytics / audit
         ConversationLog.objects.create(
@@ -106,10 +108,6 @@ class TokenView(View):
 
     def _generate_token(self):
         # Create an Access Token
-        print(settings.TWILIO_ACCOUNT_SID)
-        print(settings.TWILIO_API_KEY)
-        print(settings.TWILIO_API_SECRET)
-        print(settings.TWILIO_TWIML_APP_SID)
         token = AccessToken(
             settings.TWILIO_ACCOUNT_SID,
             settings.TWILIO_API_KEY,
