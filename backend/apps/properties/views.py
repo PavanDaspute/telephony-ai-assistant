@@ -14,7 +14,12 @@ class PropertyListView(generics.ListAPIView):
     Supports search via ?search=<term> on title, location, description.
     """
 
-    queryset = Property.objects.all()
+    # ⚡ Performance Optimization: fetch only required fields to reduce DB load
+    # 🚫 N+1 Avoidance Note: If any ForeignKey or ManyToMany fields are added to Property
+    # in the future, remember to chain .select_related('fk_field') or .prefetch_related('m2m_field')
+    queryset = Property.objects.all().only(
+        "id", "title", "location", "price", "carpet_area", "bedrooms"
+    )
     serializer_class = PropertySerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["title", "location", "description"]
@@ -28,5 +33,9 @@ class PropertyDetailView(generics.RetrieveAPIView):
     Returns details for a single property.
     """
 
-    queryset = Property.objects.all()
+    # ⚡ Performance Optimization: fetch only required fields for detail view
+    queryset = Property.objects.all().only(
+        "id", "title", "location", "price", "carpet_area", 
+        "bedrooms", "amenities", "description"
+    )
     serializer_class = PropertySerializer

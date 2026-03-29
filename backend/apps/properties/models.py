@@ -10,11 +10,12 @@ class Property(models.Model):
     Represents a real estate property/flat with all relevant details.
     """
 
-    title = models.CharField(max_length=255, help_text="Short title for the property")
-    location = models.CharField(max_length=255, help_text="Area/city where the property is located")
+    title = models.CharField(max_length=255, db_index=True, help_text="Short title for the property")
+    location = models.CharField(max_length=255, db_index=True, help_text="Area/city where the property is located")
     price = models.DecimalField(
         max_digits=12,
         decimal_places=2,
+        db_index=True,
         help_text="Price in INR (e.g. 7500000 for 75 lakh)",
     )
     carpet_area = models.PositiveIntegerField(help_text="Carpet area in square feet")
@@ -32,6 +33,10 @@ class Property(models.Model):
         verbose_name = "Property"
         verbose_name_plural = "Properties"
         ordering = ["-created_at"]
+        # Added composite index to optimize queries filtering by both location and price
+        indexes = [
+            models.Index(fields=["location", "price"]),
+        ]
 
     def __str__(self):
         return f"{self.title} — {self.location}"

@@ -170,7 +170,7 @@ Copy `backend/.env.example` → `backend/.env` and fill in:
 ```
 Caller speaks → Twilio STT → POST /process-speech/
   → get_ai_response() → Retrieves conversational context via CallSid
-  → Sends context + query to Google Gemini (gemini-1.5-flash)
+  → Sends context + query to Google Gemini (gemini-2.5-flash)
   → natural language response → Twilio TTS → spoken back to caller
 ```
 
@@ -178,6 +178,14 @@ Caller speaks → Twilio STT → POST /process-speech/
 - **Google Gemini API**: Provides dynamic and robust natural language understanding and responses.
 - **Context Handling**: Remembers up to 5 of the most recent messages in a conversation so users can ask follow-up questions gracefully (e.g. "What is the price?", followed by "What about the area?").
 - **Stateless API via CallSid**: Uses an in-memory session (key: `CallSid`) to maintain interaction logic.
+
+---
+
+## ⚡ Performance Optimizations
+
+- **Indexed Fields**: Added `db_index=True` and composite indexes to frequently queried fields (`location`, `price`) to accelerate filtering.
+- **Optimized Queries**: Leveraged Django ORM `.only()` across DRF list/detail views and AI context extraction to select specifically required columns and reduce memory footprint.
+- **N+1 Avoidance Preparations**: Addressed potential N+1 query threats explicitly enforcing future relationship traversals to be paired with `select_related()` / `prefetch_related()`.
 
 ---
 

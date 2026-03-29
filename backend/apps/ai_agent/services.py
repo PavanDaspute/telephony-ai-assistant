@@ -37,8 +37,11 @@ def get_ai_response(user_query: str, call_sid: str = "default") -> str:
         return "I didn't catch that. Could you please repeat your question?"
 
     # Fetch properties from DB and format as context
-    properties = Property.objects.all()
-    if not properties.exists():
+    properties = list(Property.objects.all().only(
+        "id", "title", "location", "price", "carpet_area", "bedrooms", "amenities"
+    ))
+    
+    if not properties:
         return (
             "I'm sorry, I don't have any property listings available at the moment. "
             "Please contact our office directly for more information."
